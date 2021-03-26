@@ -27,6 +27,7 @@ DIRS = \
 	readmeoss \
 	unifiedreport \
 	reuser \
+	scancode \
 	scheduler \
 	softwareHeritage \
 	spasht \
