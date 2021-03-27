@@ -10,8 +10,8 @@ VARS = $(TOP)/Makefile.conf
 include $(VARS)
 
 DEF = -DDATADIR='"$(MODDIR)"'
-CXXFLAGS_LOCAL = $(FO_CXXFLAGS) -I. -Wall -fopenmp
-CXXFLAGS_LINK = $(FO_CXXLDFLAGS) -fopenmp
+CXXFLAGS_LOCAL = $(FO_CXXFLAGS) -I. -Wall -fopenmp $(shell pkg-config --cflags jsoncpp)
+CXXFLAGS_LINK = $(FO_CXXLDFLAGS) -fopenmp $(shell pkg-config --libs jsoncpp)
 
 EXE = scancode
 

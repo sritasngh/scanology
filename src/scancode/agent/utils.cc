@@ -21,17 +21,17 @@
 
 using namespace fo;
 
-State getState(DbManager& dbManager)
+State getState(DbManager &dbManager)
 {
   int agentId = queryAgentId(dbManager);
   return State(agentId);
 }
 
-int queryAgentId(DbManager& dbManager)
+int queryAgentId(DbManager &dbManager)
 {
-  char* COMMIT_HASH = fo_sysconfig(AGENT_NAME, "COMMIT_HASH");
-  char* VERSION = fo_sysconfig(AGENT_NAME, "VERSION");
-  char* agentRevision;
+  char *COMMIT_HASH = fo_sysconfig(AGENT_NAME, "COMMIT_HASH");
+  char *VERSION = fo_sysconfig(AGENT_NAME, "VERSION");
+  char *agentRevision;
 
   if (!asprintf(&agentRevision, "%s.%s", VERSION, COMMIT_HASH))
     bail(-1);
@@ -45,9 +45,9 @@ int queryAgentId(DbManager& dbManager)
   return agentId;
 }
 
-int writeARS(const State& state, int arsId, int uploadId, int success, DbManager& dbManager)
+int writeARS(const State &state, int arsId, int uploadId, int success, DbManager &dbManager)
 {
-  PGconn* connection = dbManager.getConnection();
+  PGconn *connection = dbManager.getConnection();
   int agentId = state.getAgentId();
 
   return fo_WriteARS(connection, arsId, uploadId, agentId, AGENT_ARS, NULL, success);
@@ -59,7 +59,7 @@ void bail(int exitval)
   exit(exitval);
 }
 
-bool processUploadId(const State& state, int uploadId, ScancodeDatabaseHandler& databaseHandler)
+bool processUploadId(const State &state, int uploadId, ScancodeDatabaseHandler &databaseHandler)
 {
   vector<unsigned long> fileIds = databaseHandler.queryFileIdsForUpload(uploadId);
 
@@ -92,9 +92,9 @@ bool processUploadId(const State& state, int uploadId, ScancodeDatabaseHandler& 
   return !errors;
 }
 
-bool matchPFileWithLicenses(const State& state, unsigned long pFileId, ScancodeDatabaseHandler& databaseHandler)
+bool matchPFileWithLicenses(const State &state, unsigned long pFileId, ScancodeDatabaseHandler &databaseHandler)
 {
-  char* pFile = databaseHandler.getPFileNameForFileId(pFileId);
+  char *pFile = databaseHandler.getPFileNameForFileId(pFileId);
 
   if (!pFile)
   {
@@ -102,9 +102,9 @@ bool matchPFileWithLicenses(const State& state, unsigned long pFileId, ScancodeD
     bail(8);
   }
 
-  char* fileName = NULL;
+  char *fileName = NULL;
   {
-#pragma omp critical (repo_mk_path)
+#pragma omp critical(repo_mk_path)
     fileName = fo_RepMkPath("files", pFile);
   }
   if (fileName)
@@ -126,19 +126,19 @@ bool matchPFileWithLicenses(const State& state, unsigned long pFileId, ScancodeD
   return true;
 }
 
-bool matchFileWithLicenses(const State& state, const fo::File& file, ScancodeDatabaseHandler& databaseHandler)
+bool matchFileWithLicenses(const State &state, const fo::File &file, ScancodeDatabaseHandler &databaseHandler)
 {
   string scancodeResult = scanFileWithScancode(state, file);
-  vector<string> scancodeLicenseNames = extractLicensesFromScancodeResult(scancodeResult);
-  vector<LicenseMatch> matches = createMatches(scancodeLicenseNames);
-  return saveLicenseMatchesToDatabase(state, matches, file.getId(), databaseHandler);
+  vector<LicenseMatch> scancodeLicenseNames = extractLicensesFromScancodeResult(scancodeResult);
+
+  return saveLicenseMatchesToDatabase(state, scancodeLicenseNames, file.getId(), databaseHandler);
 }
 
-bool saveLicenseMatchesToDatabase(const State& state, const vector<LicenseMatch>& matches, unsigned long pFileId, ScancodeDatabaseHandler& databaseHandler)
+bool saveLicenseMatchesToDatabase(const State &state, const vector<LicenseMatch> &matches, unsigned long pFileId, ScancodeDatabaseHandler &databaseHandler)
 {
   for (vector<LicenseMatch>::const_iterator it = matches.begin(); it != matches.end(); ++it)
   {
-    const LicenseMatch& match = *it;
+    const LicenseMatch &match = *it;
     databaseHandler.insertOrCacheLicenseIdForName(match.getLicenseName());
   }
 
@@ -147,7 +147,7 @@ bool saveLicenseMatchesToDatabase(const State& state, const vector<LicenseMatch>
 
   for (vector<LicenseMatch>::const_iterator it = matches.begin(); it != matches.end(); ++it)
   {
-    const LicenseMatch& match = *it;
+    const LicenseMatch &match = *it;
 
     int agentId = state.getAgentId();
     string rfShortname = match.getLicenseName();
@@ -161,7 +161,6 @@ bool saveLicenseMatchesToDatabase(const State& state, const vector<LicenseMatch>
       cout << "cannot get licenseId for shortname '" + rfShortname + "'" << endl;
       return false;
     }
-
 
     if (!databaseHandler.saveLicenseMatch(agentId, pFileId, licenseId, percent))
     {

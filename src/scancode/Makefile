@@ -20,7 +20,7 @@ all: VERSIONFILE
 	$(call DIR_LOOP, )
 
 test: all
-	$(TOP)/install/scripts/install-scancode.sh
+	# $(TOP)/install/scripts/install-scancode.sh
 	$(MAKE) -C $(TESTDIR) test
 
 coverage: all
