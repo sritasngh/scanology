@@ -59,18 +59,27 @@ vector<LicenseMatch> extractLicensesFromScancodeResult(string scancodeResult)
 {
   Json::Reader scanner;
   Json::Value scancodevalue;
-
+  //cout<<"I am here"<<"\n";
   bool isSuccessful = scanner.parse(scancodeResult, scancodevalue);
   vector<LicenseMatch> result;
   if (isSuccessful)
   {
-    Json::Value resultarray = scancodevalue["files"]["licenses"];
+    //cout<<"I am here"<<"\n";
+    Json::Value resultarrays = scancodevalue["files"];
+    //cout<<resultarrays.size()<<endl;
+    Json::Value temp = resultarrays[0];
+    //cout<<temp.size()<<endl;
+    Json::Value resultarray = temp["licenses"];
+    //cout<<resultarray.size()<<endl;
+
 
     for (unsigned int i = 0; i < resultarray.size(); ++i)
     {
       Json::Value oneresult = resultarray[i];
+      //cout<<oneresult.size()<<endl;
       try
       {
+        // cout<<oneresult["short_name"].asString();
         string licensename = scancode_to_fossology_map.at(oneresult["short_name"].asString());
         result.push_back(LicenseMatch(licensename, oneresult["score"].asDouble()));
       }
@@ -88,115 +97,6 @@ vector<LicenseMatch> extractLicensesFromScancodeResult(string scancodeResult)
   }
   return result;
 }
-
-/*string mapLicenseFromScancodeToFossology(string name)
-{
-  if (name.compare("NONE") == 0)
-    return string("No_license_found");
-  if (name.compare("UNKNOWN") == 0)
-    return string("UnclassifiedLicense");
-  if (name.compare("spdxMIT") == 0)
-    return string("MIT");
-  if (name.compare("Apachev1.0") == 0)
-    return string("Apache-1.0");
-  if (name.compare("Apachev2") == 0 || name.compare("Apache-2") == 0)
-    return string("Apache-2.0");
-  if (name.compare("GPLv1+") == 0)
-    return string("GPL-1.0+");
-  if (name.compare("GPLv2") == 0)
-    return string("GPL-2.0");
-  if (name.compare("GPLv2+") == 0)
-    return string("GPL-2.0+");
-  if (name.compare("GPLv3") == 0)
-    return string("GPL-3.0");
-  if (name.compare("GPLv3+") == 0)
-    return string("GPL-3.0+");
-  if (name.compare("LGPLv2") == 0)
-    return string("LGPL-2.0");
-  if (name.compare("LGPLv2+") == 0)
-    return string("LGPL-2.0+");
-  if (name.compare("LGPLv2_1") == 0 || name.compare("LGPLv2.1") == 0)
-    return string("LGPL-2.1");
-  if (name.compare("LGPLv2_1+") == 0)
-    return string("LGPL-2.1+");
-  if (name.compare("LGPLv3") == 0)
-    return string("LGPL-3.0");
-  if (name.compare("LGPLv3+") == 0)
-    return string("LGPL-3.0+");
-  if (name.compare("GPLnoVersion") == 0)
-    return string("GPL");
-  if (name.compare("LesserGPLnoVersion") == 0 || name.compare("LibraryGPLnoVersion") == 0)
-    return string("LGPL");
-  if (name.compare("intelBSDLicense") == 0)
-    return string("Intel-EULA");
-  if (name.compare("spdxSleepyCat") == 0 || name.compare("SleepyCat") == 0)
-    return string("Sleepycat");
-  if (name.compare("spdxBSD2") == 0 || name.compare("BSD2") == 0)
-    return string("BSD-2-Clause");
-  if (name.compare("spdxBSD3") == 0 || name.compare("BSD3") == 0)
-    return string("BSD-3-Clause");
-  if (name.compare("BSD3") == 0)
-    return string("BSD-4-Clause");
-  if (name.compare("spdxMIT") == 0)
-    return string("MIT");
-  if (name.compare("ZLIB") == 0)
-    return string("Zlib");
-  if (name.compare("openSSL") == 0 || name.compare("openSSLvar1") == 0 || name.compare("openSSLvar3") == 0)
-    return string("OpenSSL");
-  if (name.compare("QPLt") == 0)
-    return string("QT(Commercial)");
-  if (name.compare("Cecill") == 0)
-    return string("CECILL");
-  if (name.compare("QPLv1") == 0)
-    return string("QPL-1.0");
-  if (name.compare("MPLv1_1") == 0)
-    return string("MPL-1.1");
-  if (name.compare("NPLv1_1") == 0)
-    return string("NPL-1.1");
-  if (name.compare("MPLv1_0") == 0)
-    return string("MPL-1.0");
-  if (name.compare("NPLv1_0") == 0)
-    return string("NPL-1.0");
-  if (name.compare("MPLv2") == 0)
-    return string("MPL-2.0");
-  if (name.compare("MITVariant") == 0)
-    return string("MIT-style");
-  if (name.compare("EPLv1") == 0)
-    return string("EPL-1.0");
-  if (name.compare("CDDLic") == 0)
-    return string("CDDL");
-  if (name.compare("CDDLicV1") == 0)
-    return string("CDDL-1.0");
-  if (name.compare("publicDomain") == 0)
-    return string("Public-domain");
-  if (name.compare("ClassPathExceptionGPLv2") == 0)
-    return string("GPL-2.0-with-classpath-exception");
-  if (name.compare("CPLv1") == 0)
-    return string("CPL-1.0");
-  if (name.compare("CPLv0.5") == 0)
-    return string("CPL-0.5");
-  if (name.compare("SeeFile") == 0)
-    return string("See-file");
-  if (name.compare("LibGCJLic") == 0)
-    return string("LIBGCJ");
-  if (name.compare("W3CLic") == 0)
-    return string("W3C");
-  if (name.compare("IBMv1") == 0)
-    return string("IPL-1.0");
-  if (name.compare("ArtisticLicensev1") == 0)
-    return string("Artistic-1.0");
-  if (name.compare("MX4JLicensev1") == 0)
-    return string("MX4J-1.0");
-  if (name.compare("phpLicV3.01") == 0)
-    return string("PHP-3.01");
-  if (name.compare("postgresql") == 0 || name.compare("postgresqlRef") == 0)
-    return string("PostgreSQL");
-  if (name.compare("FSFUnlimited") == 0)
-    return string("FSF");
-
-  return name;
-};
-*/
 
 /*
 

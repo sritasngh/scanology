@@ -15,15 +15,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include<iostream>
 #include "scancode.hpp"
+#include "scancodewrapper.hpp"
 
 using namespace fo;
+using namespace std;
 
 int main(int argc, char** argv)
 {
   /* before parsing argv and argc make sure */
   /* to initialize the scheduler connection */
 
+  string result = scanFileWithScancode("mit.txt");
+
+  cout << result << endl;
+
+  vector<LicenseMatch> lice = extractLicensesFromScancodeResult(result);
+  for (LicenseMatch l : lice)
+  {
+    cout << l.getLicenseName() <<" " <<l.getPercentage();
+  }
   DbManager dbManager(&argc, argv);
   ScancodeDatabaseHandler databaseHandler(dbManager);
 

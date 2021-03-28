@@ -36,11 +36,6 @@ using namespace std;
 string scanFileWithScancode(const State& state, const fo::File& file);
 string scanFileWithScancode(string filename);
 vector<LicenseMatch> extractLicensesFromScancodeResult(string scancodeResult);
-// string extractLicensePartFromScancodeResult(string scancodeResult);
-// vector<string> splitLicensePart(string licensePart);
-// vector<LicenseMatch> createMatches(vector<string> scancodeLicenseNames);
-// string mapLicenseFromScancodeToFossology(string name);
-// bool isLicenseCollection(string scancodeLicenseName,vector<LicenseMatch>& matches);
 
 // scancode(key, name, shortname) : fossology
 // https://api.github.com/licenses
