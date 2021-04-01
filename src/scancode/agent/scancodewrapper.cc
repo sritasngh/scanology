@@ -22,16 +22,16 @@
 
 
 string scanFileWithScancode( const State &state, const fo::File &file){
-  string hello("{\"file: \"\"nothing\"}");
-  return hello;
-}
-string scanFileWithScancode( //const State &state, const fo::File &file
-    string filename)
-{
+//   string hello("{\"file: \"\"nothing\"}");
+//   return hello;
+// }
+// string scanFileWithScancode( //const State &state, const fo::File &file
+//     string filename)
+// {
   FILE *in;
   char buffer[512];
   // ./scancode -clpieu --json-pp <output> <input>
-  string command = "scancode -l --json-pp - " + filename;
+  string command = "scancode -l --json-pp - " + file.getFileName();
   string result = "";
 
   if (!(in = popen(command.c_str(), "r")))
@@ -98,7 +98,8 @@ vector<LicenseMatch> extractLicensesFromScancodeResult(string scancodeResult)
   return result;
 }
 
-/*
+
+/*  //scan result of command "scancode -l --json-pp - mit.txt"
 
   {
   "headers": [

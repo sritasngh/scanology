@@ -60,6 +60,11 @@ class Analysis
    */
   private $monk;
   /**
+   * @var boolean $scancode
+   * Whether to schedule scancode agent or not
+   */
+  private $scancode;
+  /**
    * @var boolean $nomos
    * Whether to schedule nomos agent or not
    */
@@ -83,12 +88,13 @@ class Analysis
    * @param boolean $keyword
    * @param boolean $mime
    * @param boolean $monk
+   * @param boolean $scancode
    * @param boolean $nomos
    * @param boolean $ojo
    * @param boolean $package
    */
   public function __construct($bucket = false, $copyright = false, $ecc = false, $keyword = false,
-    $mimetype = false, $monk = false, $nomos = false, $ojo = false, $pkgagent = false)
+    $mimetype = false, $monk = false, $scancode = false, $nomos = false, $ojo = false, $pkgagent = false)
   {
     $this->bucket = $bucket;
     $this->copyright = $copyright;
@@ -96,6 +102,7 @@ class Analysis
     $this->keyword = $keyword;
     $this->mimetype = $mimetype;
     $this->monk = $monk;
+    $this->scancode = $scancode;
     $this->nomos = $nomos;
     $this->ojo = $ojo;
     $this->pkgagent = $pkgagent;
@@ -129,6 +136,9 @@ class Analysis
     }
     if (array_key_exists("monk", $analysisArray)) {
       $this->monk = filter_var($analysisArray["monk"], FILTER_VALIDATE_BOOLEAN);
+    }
+    if (array_key_exists("scancode", $analysisArray)) {
+      $this->scancode = filter_var($analysisArray["scancode"], FILTER_VALIDATE_BOOLEAN);
     }
     if (array_key_exists("nomos", $analysisArray)) {
       $this->nomos = filter_var($analysisArray["nomos"], FILTER_VALIDATE_BOOLEAN);
@@ -167,6 +177,9 @@ class Analysis
     }
     if (stristr($analysisString, "monk")) {
       $this->monk = true;
+    }
+    if (stristr($analysisString, "scancode")) {
+      $this->scancode = true;
     }
     if (stristr($analysisString, "nomos")) {
       $this->nomos = true;
@@ -227,6 +240,13 @@ class Analysis
   public function getMonk()
   {
     return $this->monk;
+  }
+   /**
+   * @return boolean
+   */
+  public function getScancode()
+  {
+    return $this->scancode;
   }
 
   /**
@@ -303,6 +323,14 @@ class Analysis
   }
 
   /**
+   * @param boolean $scancode
+   */
+  public function setScancode($scancode)
+  {
+    $this->scancode = filter_var($scancode, FILTER_VALIDATE_BOOLEAN);
+  }
+
+  /**
    * @param boolean $nomos
    */
   public function setNomos($nomos)
@@ -339,6 +367,7 @@ class Analysis
       "keyword"   => $this->keyword,
       "mimetype"  => $this->mimetype,
       "monk"      => $this->monk,
+      "scancode"  => $this->scancode,
       "nomos"     => $this->nomos,
       "ojo"       => $this->ojo,
       "package"   => $this->pkgagent

@@ -34,7 +34,7 @@
 using namespace std;
 
 string scanFileWithScancode(const State& state, const fo::File& file);
-string scanFileWithScancode(string filename);
+//string scanFileWithScancode(string filename);
 vector<LicenseMatch> extractLicensesFromScancodeResult(string scancodeResult);
 
 // scancode(key, name, shortname) : fossology

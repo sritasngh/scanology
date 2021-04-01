@@ -430,6 +430,7 @@ paths:
             enum:
               - nomos
               - monk
+              - scancode
               - ninka
               - ojo
               - reportImport
@@ -1300,6 +1301,9 @@ components:
         monk:
           type: boolean
           description: Should Monk Analysis be run on this upload.
+        scancode:
+          type: boolean
+          description: Should Scancode Analysis be run on this upload.
         nomos:
           type: boolean
           description: Should Nomos Analysis be run on this upload.
